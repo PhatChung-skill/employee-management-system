@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Hợp đồng lao động</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/employee-header :: header}"></div>
+
+  <div class="container">
+    <h1>Hợp đồng lao động</h1>
+    <p>Nhân viên: <strong th:text="${employee.fullName}">-</strong></p>
+    
+    <div class="table-section">
+      <table border="1" cellspacing="0" cellpadding="10" class="data-table">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Mã hợp đồng</th>
+            <th>Loại hợp đồng</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày kết thúc</th>
+            <th>Mức lương</th>
+            <th>Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:if="${contracts == null || contracts.isEmpty()}">
+            <td colspan="7" style="text-align: center; color: #6b7280;">Chưa có hợp đồng</td>
+          </tr>
+          <tr th:each="contract, iterStat : ${contracts}">
+            <td th:text="${iterStat.count}">1</td>
+            <td th:text="${contract.contractId}">-</td>
+            <td th:text="${contract.contractType != null ? contract.contractType : '-'}">-</td>
+            <td th:text="${contract.startDate != null ? contract.startDate : '-'}">-</td>
+            <td th:text="${contract.endDate != null ? contract.endDate : '-'}">-</td>
+            <td th:text="${contract.salary != null ? contract.salary : '-'}">-</td>
+            <td>
+              <span th:text="${contract.status != null ? contract.status : 'Chưa cập nhật'}"
+                    th:class="${contract.status == 'Đang hiệu lực' ? 'status-success' : (contract.status == 'Hết hạn' ? 'status-danger' : 'status-default')}">
+                -
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="margin-top: 30px; color: #4b5563; font-size: 14px;">
+      Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ: <strong>hr.manager@gmail.com</strong>
+    </p>
+  </div>
+</body>
+</html>
+

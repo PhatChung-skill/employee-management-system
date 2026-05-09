@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Chi tiết nhân viên</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+  <style>
+    .details-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .section-title {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #1f2937;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    .info-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .info-label {
+      font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 5px;
+      font-size: 0.9em;
+    }
+    .info-value {
+      color: #1f2937;
+      font-size: 1em;
+    }
+    .table-section {
+      overflow-x: auto;
+    }
+    .action-buttons {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    @media (max-width: 768px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div th:replace="~{fragments/hr-header :: header}"></div>
+
+  <div class="container details-container">
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h1>Chi tiết nhân viên</h1>
+      <a th:href="@{/hr/employees}" class="btn">← Quay lại danh sách</a>
+    </div>
+
+    <div th:if="${error}" class="alert alert-error" style="color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">
+      <span th:text="${error}"></span>
+    </div>
+
+    <!-- Basic Information Section -->
+    <div class="section">
+      <h2 class="section-title">Thông tin cơ bản</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Mã nhân viên</span>
+          <span class="info-value" th:text="${employee.empId}">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Họ và tên</span>
+          <span class="info-value" th:text="${employee.fullName}">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Giới tính</span>
+          <span class="info-value" th:text="${employee.gender != null ? employee.gender : 'Chưa cập nhật'}">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Ngày sinh</span>
+          <span class="info-value" th:text="${employee.dob != null ? employee.dob : 'Chưa cập nhật'}">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Số điện thoại</span>
+          <span class="info-value" th:text="${employee.phone != null ? employee.phone : 'Chưa cập nhật'}">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Email</span>
+          <span class="info-value" th:text="${employee.email != null ? employee.email : 'Chưa cập nhật'}">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Địa chỉ</span>
+          <span class="info-value" th:text="${employee.address != null ? employee.address : 'Chưa cập nhật'}">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Ngày vào làm</span>
+          <span class="info-value" th:text="${employee.hireDate != null ? employee.hireDate : 'Chưa cập nhật'}">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Phòng ban</span>
+          <span class="info-value" th:text="${employee.department != null ? employee.department.deptName : 'Chưa được phân bổ'}">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Chức vụ</span>
+          <span class="info-value" th:text="${employee.position != null ? employee.position.positionName : 'Chưa được phân bổ'}">-</span>
+        </div>
+        <div class="info-item" th:if="${hasAccount}">
+          <span class="info-label">Tài khoản</span>
+          <span class="info-value" th:text="${account.username}">-</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contracts Section -->
+    <div class="section">
+      <h2 class="section-title">Hợp đồng</h2>
+      <div class="table-section">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Loại hợp đồng</th>
+              <th>Ngày bắt đầu</th>
+              <th>Ngày kết thúc</th>
+              <th>Lương</th>
+              <th>Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${contracts == null || contracts.isEmpty()}">
+              <td colspan="6" style="text-align: center; color: #6b7280;">Không có hợp đồng</td>
+            </tr>
+            <tr th:each="contract : ${contracts}">
+              <td th:text="${contract.contractId}">-</td>
+              <td th:text="${contract.contractType != null ? contract.contractType : '-'}">-</td>
+              <td th:text="${contract.startDate != null ? contract.startDate : '-'}">-</td>
+              <td th:text="${contract.endDate != null ? contract.endDate : '-'}">-</td>
+              <td th:text="${contract.salary != null ? (contract.salary + ' VNĐ') : '-'}">-</td>
+              <td>
+                <span th:text="${contract.status != null ? contract.status : '-'}" 
+                      th:class="${contract.status == 'Đang hiệu lực' ? 'status-success' : (contract.status == 'Đã chấm dứt' ? 'status-error' : 'status-default')}">
+                  -
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Attendance Section -->
+    <div class="section">
+      <h2 class="section-title">
+        Lịch sử chấm công 
+        <span style="font-size: 0.8em; font-weight: normal; color: #6b7280;" th:if="${totalAttendances > 0}">
+          (Hiển thị 10 bản ghi gần nhất trong tổng số <span th:text="${totalAttendances}"></span> bản ghi)
+        </span>
+      </h2>
+      <div class="table-section">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Ngày làm việc</th>
+              <th>Giờ vào</th>
+              <th>Giờ ra</th>
+              <th>Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${attendances == null || attendances.isEmpty()}">
+              <td colspan="5" style="text-align: center; color: #6b7280;">Không có dữ liệu chấm công</td>
+            </tr>
+            <tr th:each="att : ${attendances}">
+              <td th:text="${att.attendanceId}">-</td>
+              <td th:text="${att.workDate != null ? att.workDate : '-'}">-</td>
+              <td th:text="${att.checkIn != null ? att.checkIn : '-'}">-</td>
+              <td th:text="${att.checkOut != null ? att.checkOut : '-'}">-</td>
+              <td>
+                <span th:text="${att.status != null ? att.status : '-'}" 
+                      th:class="${att.status == 'Đã duyệt' || att.status == 'Đúng giờ' ? 'status-success' : (att.status == 'Chờ duyệt' ? 'status-warning' : (att.status == 'Vắng mặt' ? 'status-error' : 'status-default'))}">
+                  -
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <a th:href="@{'/hr/employees/edit/' + ${employee.empId}}" class="btn btn-primary">Chỉnh sửa</a>
+      <a th:href="@{/hr/employees}" class="btn">Quay lại</a>
+    </div>
+  </div>
+</body>
+</html>
+

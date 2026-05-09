@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Trang chủ Admin</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/admin-header :: header}"></div>
+
+  <div class="container">
+    <h1>Bảng điều khiển Admin</h1>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Tổng số tài khoản</h3>
+        <p class="stat-number" th:text="${totalAccounts}">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Tổng số nhân viên</h3>
+        <p class="stat-number" th:text="${totalEmployees}">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Phòng ban</h3>
+        <p class="stat-number" th:text="${totalDepartments}">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Chức vụ</h3>
+        <p class="stat-number" th:text="${totalPositions}">0</p>
+      </div>
+    </div>
+
+    <div class="role-stats" style="margin-top: 30px;">
+      <h2>Thống kê theo vai trò</h2>
+      <div class="stats-grid">
+        <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          <h3>Admin</h3>
+          <p class="stat-number" th:text="${adminAccounts}">0</p>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+          <h3>HR</h3>
+          <p class="stat-number" th:text="${hrAccounts}">0</p>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+          <h3>Nhân viên</h3>
+          <p class="stat-number" th:text="${employeeAccounts}">0</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <h2>Thao tác nhanh</h2>
+      <div class="action-grid">
+        <a th:href="@{/admin/accounts}" class="action-card">
+          <h3>Quản lý tài khoản</h3>
+          <p>Quản lý, backup, restore tài khoản hệ thống</p>
+        </a>
+        <a th:href="@{/admin/departments}" class="action-card">
+          <h3>Quản lý phòng ban</h3>
+          <p>Thêm, sửa, xóa phòng ban</p>
+        </a>
+        <a th:href="@{/admin/positions}" class="action-card">
+          <h3>Quản lý chức vụ</h3>
+          <p>Thêm, sửa, xóa chức vụ</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

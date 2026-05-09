@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Cập nhật chấm công</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/hr-header :: header}"></div>
+
+  <div class="container">
+    <h1>Cập nhật chấm công</h1>
+    
+    <form th:action="@{'/hr/attendance/edit/' + ${attendance.attendanceId}}" method="post" class="form-container">
+      <div class="form-group">
+        <label>Nhân viên:</label>
+        <input type="text" th:value="${attendance.emp != null ? attendance.emp.fullName : '-'}" readonly/>
+      </div>
+
+      <div class="form-group">
+        <label>Ngày làm việc: <span style="color: red;">*</span></label>
+        <input type="date" name="workDate" 
+               th:value="${attendance.workDate != null ? attendance.workDate : ''}" required/>
+      </div>
+
+      <div class="form-group">
+        <label>Giờ vào:</label>
+        <input type="time" name="checkIn" 
+               th:value="${attendance.checkIn != null ? attendance.checkIn : ''}"/>
+      </div>
+
+      <div class="form-group">
+        <label>Giờ ra:</label>
+        <input type="time" name="checkOut" 
+               th:value="${attendance.checkOut != null ? attendance.checkOut : ''}"/>
+      </div>
+
+      <div class="form-group">
+        <label>Trạng thái: <span style="color: red;">*</span></label>
+        <select name="status" required>
+          <option value="">-- Chọn trạng thái --</option>
+          <option value="Chờ duyệt" th:selected="${attendance.status == 'Chờ duyệt'}">Chờ duyệt</option>
+          <option value="Đã duyệt" th:selected="${attendance.status == 'Đã duyệt'}">Đã duyệt</option>
+          <option value="Đúng giờ" th:selected="${attendance.status == 'Đúng giờ'}">Đúng giờ</option>
+          <option value="Muộn" th:selected="${attendance.status == 'Muộn'}">Muộn</option>
+          <option value="Vắng mặt" th:selected="${attendance.status == 'Vắng mặt' || attendance.status == 'Vắng'}">Vắng mặt</option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Cập nhật</button>
+        <a th:href="@{/hr/attendance}" class="btn">Hủy</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
+

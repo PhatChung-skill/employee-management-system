@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Quản lý chức vụ</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/admin-header :: header}"></div>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Quản lý chức vụ</h1>
+      <a th:href="@{/admin/positions/add}" class="btn btn-primary">+ Thêm chức vụ</a>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success" style="color: green; padding: 10px; margin-bottom: 15px; background-color: #e6ffe6; border: 1px solid #99ff99; border-radius: 4px;">
+      <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-error" style="color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">
+      <span th:text="${error}"></span>
+    </div>
+
+    <div class="table-section">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên chức vụ</th>
+            <th>Lương cơ bản</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:if="${positions == null || positions.isEmpty()}">
+            <td colspan="4" style="text-align: center; color: #6b7280;">Không có dữ liệu</td>
+          </tr>
+          <tr th:each="pos : ${positions}">
+            <td th:text="${pos.positionId}">-</td>
+            <td th:text="${pos.positionName}">-</td>
+            <td th:text="${pos.baseSalary != null ? #numbers.formatDecimal(pos.baseSalary, 0, 'POINT', 2, 'POINT') + ' VNĐ' : '-'}">-</td>
+            <td>
+              <a th:href="@{'/admin/positions/edit/' + ${pos.positionId}}" class="btn btn-sm btn-edit">Sửa</a>
+              <form th:action="@{'/admin/positions/delete/' + ${pos.positionId}}" 
+                    method="post" style="display: inline;" 
+                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa chức vụ này?');">
+                <button type="submit" class="btn btn-sm btn-delete">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
+

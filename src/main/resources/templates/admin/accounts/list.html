@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Quản lý tài khoản</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/admin-header :: header}"></div>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Quản lý tài khoản</h1>
+      <div style="display: flex; gap: 10px;">
+        <a th:href="@{/admin/accounts/backup}" class="btn" style="background-color: #10b981; color: white;">Sao lưu tài khoản</a>
+        <a th:href="@{/admin/accounts/add}" class="btn btn-primary">+ Thêm tài khoản</a>
+      </div>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success" style="color: green; padding: 10px; margin-bottom: 15px; background-color: #e6ffe6; border: 1px solid #99ff99; border-radius: 4px;">
+      <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-error" style="color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">
+      <span th:text="${error}"></span>
+    </div>
+
+    <div class="filter-section" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <form method="get" th:action="@{/admin/accounts}">
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <label style="font-weight: 600; color: #374151;">Tìm kiếm:</label>
+          <input type="text" 
+                 name="search" 
+                 th:value="${searchKeyword != null ? searchKeyword : ''}"
+                 placeholder="Tìm theo tên đăng nhập, vai trò, tên nhân viên, email..."
+                 style="flex: 1; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;"/>
+          <button type="submit" class="btn" style="background-color: #3b82f6; color: white;">Tìm kiếm</button>
+          <a th:href="@{/admin/accounts}" class="btn" style="background-color: #6b7280; color: white;">Xóa bộ lọc</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="table-section">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên đăng nhập</th>
+            <th>Vai trò</th>
+            <th>Nhân viên</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:if="${accounts == null || accounts.isEmpty()}">
+            <td colspan="5" style="text-align: center; color: #6b7280;">Không có dữ liệu</td>
+          </tr>
+          <th:block th:each="acc : ${accounts}">
+            <tr>
+              <td th:text="${acc.accountId}">-</td>
+              <td th:text="${acc.username}">-</td>
+              <td>
+                <span th:text="${acc.role}" 
+                      th:class="${acc.role == 'ADMIN' ? 'status-success' : (acc.role == 'HR' ? 'status-warning' : 'status-default')}">
+                  -
+                </span>
+              </td>
+              <td th:text="${acc.emp != null ? acc.emp.fullName : 'Chưa liên kết'}">-</td>
+              <td>
+                <button th:if="${acc.emp != null}"
+                        type="button" 
+                        class="btn btn-sm" 
+                        style="background-color: #10b981; color: white; margin-right: 5px;"
+                        th:onclick="'toggleDetails(' + ${acc.accountId} + ')'">Xem chi tiết</button>
+                <a th:href="@{'/admin/accounts/edit/' + ${acc.accountId}}" class="btn btn-sm btn-edit">Sửa</a>
+                <form th:action="@{'/admin/accounts/delete/' + ${acc.accountId}}" 
+                      method="post" style="display: inline;" 
+                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?');">
+                  <button type="submit" class="btn btn-sm btn-delete">Xóa</button>
+                </form>
+              </td>
+            </tr>
+            <!-- Details Row -->
+            <tr th:if="${acc.emp != null}" style="display: none;" th:id="'details-' + ${acc.accountId}">
+              <td colspan="5" style="background-color: #f9fafb; padding: 20px;">
+                <div class="account-details" style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
+                    <h3 style="margin: 0; color: #1f2937;">
+                      Thông tin chi tiết nhân viên
+                    </h3>
+                    <button type="button" 
+                            class="btn btn-sm" 
+                            style="background-color: #ef4444; color: white; padding: 6px 12px;"
+                            th:onclick="'toggleDetails(' + ${acc.accountId} + ')'">Đóng</button>
+                  </div>
+                  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div>
+                      <span style="font-weight: 600; color: #6b7280; display: block; margin-bottom: 5px;">Mã nhân viên:</span>
+                      <span style="color: #1f2937;" th:text="${acc.emp.empId}">-</span>
+                    </div>
+                    <div>
+                      <span style="font-weight: 600; color: #6b7280; display: block; margin-bottom: 5px;">Họ và tên:</span>
+                      <span style="color: #1f2937;" th:text="${acc.emp.fullName}">-</span>
+                    </div>
+                    <div>
+                      <span style="font-weight: 600; color: #6b7280; display: block; margin-bottom: 5px;">Giới tính:</span>
+                      <span style="color: #1f2937;" th:text="${acc.emp.gender != null ? acc.emp.gender : 'Chưa cập nhật'}">-</span>
+                    </div>
+                    <div>
+                      <span style="font-weight: 600; color: #6b7280; display: block; margin-bottom: 5px;">Ngày sinh:</span>
+                      <span style="color: #1f2937;" th:text="${acc.emp.dob != null ? acc.emp.dob : 'Chưa cập nhật'}">-</span>
+                    </div>
+                    <div>
+                      <span style="font-weight: 600; color: #6b7280; display: block; margin-bottom: 5px;">Số điện thoại:</span>
+                      <span style="color: #1f2937;" th:text="${acc.emp.phone != null ? acc.emp.phone : 'Chưa cập nhật'}">-</span>
+                    </div>
+                    <div>
+                      <span style="font-weight: 600; color: #6b7280; display: block; margin-bottom: 5px;">Email:</span>
+                      <span style="color: #1f2937;" th:text="${acc.emp.email != null ? acc.emp.email : 'Chưa cập nhật'}">-</span>
+                    </div>
+                    <div>
+                      <span style="font-weight: 600; color: #6b7280; display: block; margin-bottom: 5px;">Địa chỉ:</span>
+                      <span style="color: #1f2937;" th:text="${acc.emp.address != null ? acc.emp.address : 'Chưa cập nhật'}">-</span>
+                    </div>
+                    <div>
+                      <span style="font-weight: 600; color: #6b7280; display: block; margin-bottom: 5px;">Ngày vào làm:</span>
+                      <span style="color: #1f2937;" th:text="${acc.emp.hireDate != null ? acc.emp.hireDate : 'Chưa cập nhật'}">-</span>
+                    </div>
+                    <div>
+                      <span style="font-weight: 600; color: #6b7280; display: block; margin-bottom: 5px;">Phòng ban:</span>
+                      <span style="color: #1f2937;" th:text="${acc.emp.department != null ? acc.emp.department.deptName : 'Chưa được phân bổ'}">-</span>
+                    </div>
+                    <div>
+                      <span style="font-weight: 600; color: #6b7280; display: block; margin-bottom: 5px;">Chức vụ:</span>
+                      <span style="color: #1f2937;" th:text="${acc.emp.position != null ? acc.emp.position.positionName : 'Chưa được phân bổ'}">-</span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </th:block>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function toggleDetails(accountId) {
+      const detailsRow = document.getElementById('details-' + accountId);
+      if (detailsRow) {
+        if (detailsRow.style.display === 'none') {
+          detailsRow.style.display = 'table-row';
+        } else {
+          detailsRow.style.display = 'none';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
+

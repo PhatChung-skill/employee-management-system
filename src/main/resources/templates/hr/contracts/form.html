@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Thêm hợp đồng</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/hr-header :: header}"></div>
+
+  <div class="container">
+    <h1>Thêm hợp đồng mới</h1>
+    
+    <div th:if="${error}" class="alert alert-error" style="color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">
+      <span th:text="${error}"></span>
+    </div>
+    
+    <form th:object="${contract}" 
+          th:action="@{/hr/contracts/add}" 
+          method="post" class="form-container">
+      <div class="form-group">
+        <label>Nhân viên: <span style="color: red;">*</span></label>
+        <select name="empId" required>
+          <option value="">-- Chọn nhân viên --</option>
+          <option th:each="emp : ${employees}" 
+                  th:value="${emp.empId}" 
+                  th:text="${emp.fullName + ' (' + emp.email + ')'}"></option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Loại hợp đồng: <span style="color: red;">*</span></label>
+        <input type="text" th:field="*{contractType}" required placeholder="VD: Hợp đồng chính thức, Hợp đồng thử việc"/>
+      </div>
+
+      <div class="form-group">
+        <label>Ngày bắt đầu: <span style="color: red;">*</span></label>
+        <input type="date" th:field="*{startDate}" required/>
+      </div>
+
+      <div class="form-group">
+        <label>Ngày kết thúc: <span style="color: red;">*</span></label>
+        <input type="date" th:field="*{endDate}" required/>
+      </div>
+
+      <div class="form-group">
+        <label>Mức lương: <span style="color: red;">*</span></label>
+        <input type="number" th:field="*{salary}" step="0.01" min="0" required placeholder="Nhập số tiền"/>
+      </div>
+
+      <div class="form-group">
+        <label>Trạng thái:</label>
+        <select th:field="*{status}">
+          <option value="">-- Chọn trạng thái (mặc định: Đang hiệu lực) --</option>
+          <option value="Đang hiệu lực" selected>Đang hiệu lực</option>
+          <option value="Chờ duyệt">Chờ duyệt</option>
+          <option value="Hết hạn">Hết hạn</option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Thêm</button>
+        <a th:href="@{/hr/contracts}" class="btn">Hủy</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
+

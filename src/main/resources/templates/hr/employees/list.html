@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Quản lý nhân viên</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/hr-header :: header}"></div>
+
+<div class="container">
+  <div class="page-header">
+    <h1>Quản lý nhân viên</h1>
+    <a th:href="@{/hr/employees/add}" class="btn btn-primary">+ Thêm nhân viên</a>
+  </div>
+
+  <div th:if="${success}" class="alert alert-success" style="color: green; padding: 10px; margin-bottom: 15px; background-color: #e6ffe6; border: 1px solid #99ff99; border-radius: 4px;">
+    <span th:text="${success}"></span>
+  </div>
+  <div th:if="${error}" class="alert alert-error" style="color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">
+    <span th:text="${error}"></span>
+  </div>
+
+  <div class="search-section">
+    <form method="get" th:action="@{/hr/employees}">
+      <input type="text" name="search" placeholder="Tìm kiếm theo tên, email, số điện thoại..."
+             th:value="${searchKeyword}" style="width: 400px; padding: 10px; border-radius: 6px; border: 1px solid #ddd;"/>
+      <button type="submit" class="btn">Tìm kiếm</button>
+      <a th:href="@{/hr/employees}" class="btn" style="margin-left: 10px;">Xóa bộ lọc</a>
+    </form>
+  </div>
+
+  <div class="table-section">
+    <table class="data-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Họ tên</th>
+        <th>Giới tính</th>
+        <th>Ngày sinh</th>
+        <th>Email</th>
+        <th>Số điện thoại</th>
+        <th>Phòng ban</th>
+        <th>Chức vụ</th>
+        <th>Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:if="${employees == null || employees.isEmpty()}">
+        <td colspan="9" style="text-align: center; color: #6b7280;">Không có dữ liệu</td>
+      </tr>
+      <tr th:each="emp : ${employees}">
+        <td th:text="${emp.empId}">-</td>
+        <td th:text="${emp.fullName}">-</td>
+        <td th:text="${emp.gender != null ? emp.gender : '-'}">-</td>
+        <td th:text="${emp.dob != null ? emp.dob : '-'}">-</td>
+        <td th:text="${emp.email != null ? emp.email : '-'}">-</td>
+        <td th:text="${emp.phone != null ? emp.phone : '-'}">-</td>
+        <td th:text="${emp.department != null ? emp.department.deptName : '-'}">-</td>
+        <td th:text="${emp.position != null ? emp.position.positionName : '-'}">-</td>
+        <td>
+          <a th:href="@{'/hr/employees/view/' + ${emp.empId}}" class="btn btn-sm" style="background-color: #3b82f6; color: white; margin-right: 5px;">Xem chi tiết</a>
+          <a th:href="@{'/hr/employees/edit/' + ${emp.empId}}" class="btn btn-sm btn-edit">Sửa</a>
+          <form th:action="@{'/hr/employees/delete/' + ${emp.empId}}" method="post" style="display: inline;"
+                onsubmit="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?');">
+            <button type="submit" class="btn btn-sm btn-delete">Xóa</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>
+

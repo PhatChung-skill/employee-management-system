@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="${employee.empId != null ? 'Sửa nhân viên' : 'Thêm nhân viên'}">Form nhân viên</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/hr-header :: header}"></div>
+
+<div class="container">
+  <h1 th:text="${employee.empId != null ? 'Sửa nhân viên' : 'Thêm nhân viên'}">Form nhân viên</h1>
+
+  <div th:if="${error}" class="alert alert-error" style="color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">
+    <span th:text="${error}"></span>
+  </div>
+
+  <form th:object="${employee}"
+        th:action="${employee.empId != null ? '/hr/employees/edit/' + employee.empId : '/hr/employees/add'}"
+        method="post" class="form-container">
+    <input type="hidden" th:if="${employee.empId != null}" th:field="*{empId}"/>
+
+    <div class="form-group">
+      <label>Họ và tên: <span style="color: red;">*</span></label>
+      <input type="text" th:field="*{fullName}" required/>
+    </div>
+
+    <div class="form-group">
+      <label>Giới tính:</label>
+      <select th:field="*{gender}">
+        <option value="">-- Chọn --</option>
+        <option value="Nam">Nam</option>
+        <option value="Nữ">Nữ</option>
+        <option value="Khác">Khác</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Ngày sinh:</label>
+      <input type="date" name="dob" th:value="${employee.dob != null ? #temporals.format(employee.dob, 'yyyy-MM-dd') : ''}"/>
+    </div>
+
+    <div class="form-group">
+      <label>Số điện thoại:</label>
+      <input type="text" th:field="*{phone}"/>
+    </div>
+
+    <div class="form-group">
+      <label>Email:</label>
+      <input type="email" th:field="*{email}"/>
+    </div>
+
+    <div class="form-group">
+      <label>Địa chỉ:</label>
+      <textarea th:field="*{address}" rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Ngày vào làm:</label>
+      <input type="date" name="hireDate" th:value="${employee.hireDate != null ? #temporals.format(employee.hireDate, 'yyyy-MM-dd') : ''}"/>
+    </div>
+
+    <div class="form-group">
+      <label>Phòng ban:</label>
+      <select name="deptId">
+        <option value="">-- Chọn phòng ban --</option>
+        <option th:each="dept : ${departments}"
+                th:value="${dept.deptId}"
+                th:selected="${employee.department != null && employee.department.deptId == dept.deptId}"
+                th:text="${dept.deptName}"></option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Chức vụ:</label>
+      <select name="positionId">
+        <option value="">-- Chọn chức vụ --</option>
+        <option th:each="pos : ${positions}"
+                th:value="${pos.positionId}"
+                th:selected="${employee.position != null && employee.position.positionId == pos.positionId}"
+                th:text="${pos.positionName}"></option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Lưu</button>
+      <a th:href="@{/hr/employees}" class="btn">Hủy</a>
+    </div>
+  </form>
+</div>
+</body>
+</html>
+

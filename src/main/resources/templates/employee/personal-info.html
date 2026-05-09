@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Thông tin cá nhân</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/employee-header :: header}"></div>
+
+  <div class="container">
+    <h1>Thông tin cá nhân</h1>
+    
+    <div class="info-section">
+      <table class="info-table">
+        <tr>
+          <th>Mã nhân viên:</th>
+          <td th:text="${employee.empId}">-</td>
+        </tr>
+        <tr>
+          <th>Họ và tên:</th>
+          <td th:text="${employee.fullName}">-</td>
+        </tr>
+        <tr>
+          <th>Giới tính:</th>
+          <td th:text="${employee.gender != null ? employee.gender : 'Chưa cập nhật'}">-</td>
+        </tr>
+        <tr>
+          <th>Ngày sinh:</th>
+          <td th:text="${employee.dob != null ? employee.dob : 'Chưa cập nhật'}">-</td>
+        </tr>
+        <tr>
+          <th>Số điện thoại:</th>
+          <td th:text="${employee.phone != null ? employee.phone : 'Chưa cập nhật'}">-</td>
+        </tr>
+        <tr>
+          <th>Email:</th>
+          <td th:text="${employee.email != null ? employee.email : 'Chưa cập nhật'}">-</td>
+        </tr>
+        <tr>
+          <th>Địa chỉ:</th>
+          <td th:text="${employee.address != null ? employee.address : 'Chưa cập nhật'}">-</td>
+        </tr>
+        <tr>
+          <th>Ngày vào làm:</th>
+          <td th:text="${employee.hireDate != null ? employee.hireDate : 'Chưa cập nhật'}">-</td>
+        </tr>
+        <tr>
+          <th>Phòng ban:</th>
+          <td th:text="${employee.department != null ? employee.department.deptName : 'Chưa được phân bổ'}">-</td>
+        </tr>
+        <tr>
+          <th>Chức vụ:</th>
+          <td th:text="${employee.position != null ? employee.position.positionName : 'Chưa được phân bổ'}">-</td>
+        </tr>
+      </table>
+    </div>
+
+    <p style="margin-top: 30px; color: #4b5563; font-size: 14px;">
+      Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ: <strong>hr.manager@gmail.com</strong>
+    </p>
+  </div>
+</body>
+</html>
+

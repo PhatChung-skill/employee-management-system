@@ -1,0 +1,16 @@
+<header th:fragment="header" xmlns:th="http://www.thymeleaf.org">
+  <nav class="employee-nav">
+    <div class="nav-left">
+      <img src="/images/admin.png" alt="Logo" class="logo" th:src="@{/images/admin.png}" style="height: 40px; margin-right: 20px;"/>
+      <span class="company-name">Hệ thống Quản lý Nhân sự - Admin</span>
+    </div>
+    <div class="nav-right">
+      <a th:href="@{/admin/dashboard}">Trang chủ</a>
+      <a th:href="@{/admin/accounts}">Quản lý tài khoản</a>
+      <a th:href="@{/admin/departments}">Quản lý phòng ban</a>
+      <a th:href="@{/admin/positions}">Quản lý chức vụ</a>
+      <a th:href="@{/logout}" class="logout-btn">Đăng xuất</a>
+    </div>
+  </nav>
+</header>
+

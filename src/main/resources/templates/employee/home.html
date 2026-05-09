@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Trang chủ - Nhân viên</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/employee-header :: header}"></div>
+
+  <div class="container">
+    <h1>Chào mừng, <span th:text="${employee.fullName}">Nhân viên</span>!</h1>
+    
+    <div class="welcome-section">
+      <p>Đây là trang quản lý nhân sự của bạn. Bạn có thể:</p>
+      <ul class="feature-list">
+        <li>Xem <strong>Thông tin cá nhân</strong></li>
+        <li>Xem <strong>Bảng chấm công</strong> của bạn</li>
+        <li>Xem các <strong>Hợp đồng</strong> lao động</li>
+      </ul>
+    </div>
+
+    <div class="quick-info">
+      <h2>Thông tin nhanh</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>Thông tin cá nhân</h3>
+          <p><strong>Họ tên:</strong> <span th:text="${employee.fullName}">-</span></p>
+          <p><strong>Email:</strong> <span th:text="${employee.email}">-</span></p>
+          <p><strong>Số điện thoại:</strong> <span th:text="${employee.phone}">-</span></p>
+          <a th:href="@{/employee/personal-info}" class="view-link">Xem chi tiết →</a>
+        </div>
+        <div class="info-card">
+          <h3>Bảng chấm công</h3>
+          <p>Xem lịch sử chấm công của bạn</p>
+          <a th:href="@{/employee/timesheet}" class="view-link">Xem bảng chấm công →</a>
+        </div>
+        <div class="info-card">
+          <h3>Hợp đồng</h3>
+          <p>Xem thông tin hợp đồng lao động</p>
+          <a th:href="@{/employee/contracts}" class="view-link">Xem hợp đồng →</a>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top: 30px; color: #4b5563; font-size: 14px;">
+      Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ: <strong>hr.manager@gmail.com</strong>
+    </p>
+  </div>
+</body>
+</html>

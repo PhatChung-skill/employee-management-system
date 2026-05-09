@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Bảng chấm công</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/employee-header :: header}"></div>
+
+  <div class="container">
+    <h1>Bảng chấm công</h1>
+    <p>Nhân viên: <strong th:text="${employee.fullName}">-</strong></p>
+    
+    <div class="table-section">
+      <table border="1" cellspacing="0" cellpadding="10" class="data-table">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Ngày làm việc</th>
+            <th>Giờ vào</th>
+            <th>Giờ ra</th>
+            <th>Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:if="${attendances == null || attendances.isEmpty()}">
+            <td colspan="5" style="text-align: center; color: #6b7280;">Chưa có dữ liệu chấm công</td>
+          </tr>
+          <tr th:each="attendance, iterStat : ${attendances}">
+            <td th:text="${iterStat.count}">1</td>
+            <td th:text="${attendance.workDate != null ? attendance.workDate : '-'}">-</td>
+            <td th:text="${attendance.checkIn != null ? attendance.checkIn : '-'}">-</td>
+            <td th:text="${attendance.checkOut != null ? attendance.checkOut : '-'}">-</td>
+            <td>
+              <span th:text="${attendance.status != null ? attendance.status : 'Chưa cập nhật'}" 
+                    th:class="${attendance.status == 'Đúng giờ' ? 'status-success' : (attendance.status == 'Muộn' ? 'status-warning' : 'status-default')}">
+                -
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="margin-top: 30px; color: #4b5563; font-size: 14px;">
+      Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ: <strong>hr.manager@gmail.com</strong>
+    </p>
+  </div>
+</body>
+</html>
+

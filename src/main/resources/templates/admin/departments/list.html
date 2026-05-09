@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Quản lý phòng ban</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/admin-header :: header}"></div>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Quản lý phòng ban</h1>
+      <a th:href="@{/admin/departments/add}" class="btn btn-primary">+ Thêm phòng ban</a>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success" style="color: green; padding: 10px; margin-bottom: 15px; background-color: #e6ffe6; border: 1px solid #99ff99; border-radius: 4px;">
+      <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-error" style="color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">
+      <span th:text="${error}"></span>
+    </div>
+
+    <div class="table-section">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên phòng ban</th>
+            <th>Địa điểm</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:if="${departments == null || departments.isEmpty()}">
+            <td colspan="4" style="text-align: center; color: #6b7280;">Không có dữ liệu</td>
+          </tr>
+          <tr th:each="dept : ${departments}">
+            <td th:text="${dept.deptId}">-</td>
+            <td th:text="${dept.deptName}">-</td>
+            <td th:text="${dept.location != null ? dept.location : '-'}">-</td>
+            <td>
+              <a th:href="@{'/admin/departments/edit/' + ${dept.deptId}}" class="btn btn-sm btn-edit">Sửa</a>
+              <form th:action="@{'/admin/departments/delete/' + ${dept.deptId}}" 
+                    method="post" style="display: inline;" 
+                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa phòng ban này?');">
+                <button type="submit" class="btn btn-sm btn-delete">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
+

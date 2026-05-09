@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Quản lý chấm công</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/hr-header :: header}"></div>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Quản lý chấm công</h1>
+      <a th:href="@{/hr/attendance/add}" class="btn btn-primary">+ Thêm chấm công</a>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success" style="color: green; padding: 10px; margin-bottom: 15px; background-color: #e6ffe6; border: 1px solid #99ff99; border-radius: 4px;">
+      <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-error" style="color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">
+      <span th:text="${error}"></span>
+    </div>
+
+    <div class="filter-section">
+      <form method="get" th:action="@{/hr/attendance}">
+        <label>Lọc theo trạng thái:</label>
+        <select name="status">
+          <option value="">Tất cả</option>
+          <option value="Chờ duyệt" th:selected="${selectedStatus == 'Chờ duyệt'}">Chờ duyệt</option>
+          <option value="Đã duyệt" th:selected="${selectedStatus == 'Đã duyệt'}">Đã duyệt</option>
+          <option value="Đúng giờ" th:selected="${selectedStatus == 'Đúng giờ'}">Đúng giờ</option>
+          <option value="Muộn" th:selected="${selectedStatus == 'Muộn'}">Muộn</option>
+          <option value="Vắng mặt" th:selected="${selectedStatus == 'Vắng mặt'}">Vắng mặt</option>
+        </select>
+        <button type="submit" class="btn">Lọc</button>
+        <a th:href="@{/hr/attendance}" class="btn" style="margin-left: 10px;">Xóa bộ lọc</a>
+      </form>
+    </div>
+
+    <div class="table-section">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nhân viên</th>
+            <th>Ngày làm việc</th>
+            <th>Giờ vào</th>
+            <th>Giờ ra</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:if="${attendances == null || attendances.isEmpty()}">
+            <td colspan="7" style="text-align: center; color: #6b7280;">Không có dữ liệu</td>
+          </tr>
+          <tr th:each="att : ${attendances}">
+            <td th:text="${att.attendanceId}">-</td>
+            <td th:text="${att.emp != null ? att.emp.fullName : '-'}">-</td>
+            <td th:text="${att.workDate != null ? att.workDate : '-'}">-</td>
+            <td th:text="${att.checkIn != null ? att.checkIn : '-'}">-</td>
+            <td th:text="${att.checkOut != null ? att.checkOut : '-'}">-</td>
+            <td>
+              <span th:text="${att.status != null ? att.status : '-'}" 
+                    th:class="${att.status == 'Đã duyệt' || att.status == 'Đúng giờ' ? 'status-success' : (att.status == 'Chờ duyệt' ? 'status-warning' : (att.status == 'Vắng mặt' ? 'status-error' : 'status-default'))}">
+                -
+              </span>
+            </td>
+            <td>
+              <a th:href="@{'/hr/attendance/edit/' + ${att.attendanceId}}" class="btn btn-sm btn-edit">Sửa</a>
+              <form th:if="${att.status == 'Chờ duyệt'}" 
+                    th:action="@{'/hr/attendance/approve/' + ${att.attendanceId}}" 
+                    method="post" style="display: inline;">
+                <button type="submit" class="btn btn-sm btn-success">Duyệt</button>
+              </form>
+              <form th:action="@{'/hr/attendance/delete/' + ${att.attendanceId}}" 
+                    method="post" style="display: inline;" 
+                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa chấm công này?');">
+                <button type="submit" class="btn btn-sm btn-delete">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
+

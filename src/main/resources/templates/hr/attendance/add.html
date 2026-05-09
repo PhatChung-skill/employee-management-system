@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Thêm chấm công</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/hr-header :: header}"></div>
+
+  <div class="container">
+    <h1>Thêm chấm công mới</h1>
+    
+    <div th:if="${error}" class="alert alert-error" style="color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">
+      <span th:text="${error}"></span>
+    </div>
+    
+    <form th:object="${attendance}" 
+          th:action="@{/hr/attendance/add}" 
+          method="post" class="form-container">
+      <div class="form-group">
+        <label>Nhân viên: <span style="color: red;">*</span></label>
+        <select name="empId" required>
+          <option value="">-- Chọn nhân viên --</option>
+          <option th:each="emp : ${employees}" 
+                  th:value="${emp.empId}" 
+                  th:text="${emp.fullName + ' (' + emp.email + ')'}"></option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Ngày làm việc: <span style="color: red;">*</span></label>
+        <input type="date" name="workDate" required/>
+      </div>
+
+      <div class="form-group">
+        <label>Giờ vào:</label>
+        <input type="time" name="checkIn"/>
+      </div>
+
+      <div class="form-group">
+        <label>Giờ ra:</label>
+        <input type="time" name="checkOut"/>
+      </div>
+
+      <div class="form-group">
+        <label>Trạng thái:</label>
+        <select name="status">
+          <option value="">-- Chọn trạng thái (mặc định: Chờ duyệt hoặc Vắng mặt nếu không có giờ vào/ra) --</option>
+          <option value="Chờ duyệt" selected>Chờ duyệt</option>
+          <option value="Đã duyệt">Đã duyệt</option>
+          <option value="Đúng giờ">Đúng giờ</option>
+          <option value="Muộn">Muộn</option>
+          <option value="Vắng mặt">Vắng mặt</option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Thêm</button>
+        <a th:href="@{/hr/attendance}" class="btn">Hủy</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
+

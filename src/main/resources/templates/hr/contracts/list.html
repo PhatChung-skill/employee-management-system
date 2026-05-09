@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Quản lý hợp đồng</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/hr-header :: header}"></div>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Quản lý hợp đồng</h1>
+      <a th:href="@{/hr/contracts/add}" class="btn btn-primary">+ Thêm hợp đồng</a>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success" style="color: green; padding: 10px; margin-bottom: 15px; background-color: #e6ffe6; border: 1px solid #99ff99; border-radius: 4px;">
+      <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-error" style="color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">
+      <span th:text="${error}"></span>
+    </div>
+
+    <div class="filter-section">
+      <form method="get" th:action="@{/hr/contracts}">
+        <label>Lọc theo trạng thái:</label>
+        <select name="status">
+          <option value="">Tất cả</option>
+          <option value="Đang hiệu lực" th:selected="${selectedStatus == 'Đang hiệu lực'}">Đang hiệu lực</option>
+          <option value="Chờ duyệt" th:selected="${selectedStatus == 'Chờ duyệt'}">Chờ duyệt</option>
+          <option value="Hết hạn" th:selected="${selectedStatus == 'Hết hạn'}">Hết hạn</option>
+          <option value="Đã chấm dứt" th:selected="${selectedStatus == 'Đã chấm dứt'}">Đã chấm dứt</option>
+        </select>
+        <button type="submit" class="btn">Lọc</button>
+        <a th:href="@{/hr/contracts}" class="btn" style="margin-left: 10px;">Xóa bộ lọc</a>
+      </form>
+    </div>
+
+    <div class="table-section">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Mã hợp đồng</th>
+            <th>Nhân viên</th>
+            <th>Loại hợp đồng</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày kết thúc</th>
+            <th>Mức lương</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:if="${contracts == null || contracts.isEmpty()}">
+            <td colspan="8" style="text-align: center; color: #6b7280;">Không có dữ liệu</td>
+          </tr>
+          <tr th:each="contract : ${contracts}">
+            <td th:text="${contract.contractId}">-</td>
+            <td th:text="${contract.emp != null ? contract.emp.fullName : '-'}">-</td>
+            <td th:text="${contract.contractType != null ? contract.contractType : '-'}">-</td>
+            <td th:text="${contract.startDate != null ? contract.startDate : '-'}">-</td>
+            <td th:text="${contract.endDate != null ? contract.endDate : '-'}">-</td>
+            <td th:text="${contract.salary != null ? #numbers.formatDecimal(contract.salary, 0, 'POINT', 2, 'POINT') + ' VNĐ' : '-'}">-</td>
+            <td>
+              <span th:text="${contract.status != null ? contract.status : '-'}"
+                    th:class="${contract.status == 'Đang hiệu lực' ? 'status-success' : (contract.status == 'Đã chấm dứt' ? 'status-danger' : 'status-default')}">
+                -
+              </span>
+            </td>
+            <td>
+              <a th:href="@{'/hr/contracts/edit/' + ${contract.contractId}}" 
+                 class="btn btn-sm btn-edit">Sửa</a>
+              <a th:if="${contract.status == 'Đang hiệu lực' || contract.status == null}" 
+                 th:href="@{'/hr/contracts/renew/' + ${contract.contractId}}" 
+                 class="btn btn-sm" style="background-color: #3b82f6; color: white;">Gia hạn</a>
+              <form th:if="${contract.status == 'Đang hiệu lực' || contract.status == null}" 
+                    th:action="@{'/hr/contracts/terminate/' + ${contract.contractId}}" 
+                    method="post" style="display: inline;" 
+                    onsubmit="return confirm('Bạn có chắc chắn muốn chấm dứt hợp đồng này?');">
+                <button type="submit" class="btn btn-sm" style="background-color: #f59e0b; color: white;">Chấm dứt</button>
+              </form>
+              <form th:action="@{'/hr/contracts/delete/' + ${contract.contractId}}" 
+                    method="post" style="display: inline;" 
+                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa hợp đồng này? Hành động này không thể hoàn tác!');">
+                <button type="submit" class="btn btn-sm btn-delete">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
+

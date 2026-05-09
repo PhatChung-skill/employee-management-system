@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Trang chủ HR</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/hr-header :: header}"></div>
+
+  <div class="container">
+    <h1>Bảng điều khiển HR</h1>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Tổng số nhân viên</h3>
+        <p class="stat-number" th:text="${totalEmployees}">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Tổng chấm công</h3>
+        <p class="stat-number" th:text="${totalAttendances}">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Tổng hợp đồng</h3>
+        <p class="stat-number" th:text="${totalContracts}">0</p>
+      </div>
+      <div class="stat-card warning">
+        <h3>Chấm công chờ duyệt</h3>
+        <p class="stat-number" th:text="${pendingAttendances}">0</p>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <h2>Thao tác nhanh</h2>
+      <div class="action-grid">
+        <a th:href="@{/hr/employees}" class="action-card">
+          <h3>Quản lý nhân viên</h3>
+          <p>Thêm, sửa, xóa thông tin nhân viên</p>
+        </a>
+        <a th:href="@{/hr/attendance}" class="action-card">
+          <h3>Quản lý chấm công</h3>
+          <p>Cập nhật và duyệt chấm công</p>
+        </a>
+        <a th:href="@{/hr/contracts}" class="action-card">
+          <h3>Quản lý hợp đồng</h3>
+          <p>Gia hạn và chấm dứt hợp đồng</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

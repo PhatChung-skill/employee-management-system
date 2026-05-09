@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="${account.accountId != null ? 'Sửa tài khoản' : 'Thêm tài khoản'}">Form tài khoản</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/admin-header :: header}"></div>
+
+  <div class="container">
+    <h1 th:text="${account.accountId != null ? 'Sửa tài khoản' : 'Thêm tài khoản'}">Form tài khoản</h1>
+    
+    <div th:if="${error}" class="alert alert-error" style="color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">
+      <span th:text="${error}"></span>
+    </div>
+    
+    <form th:object="${account}" 
+          th:action="${account.accountId != null ? '/admin/accounts/edit/' + account.accountId : '/admin/accounts/add'}" 
+          method="post" class="form-container">
+      <input type="hidden" th:if="${account.accountId != null}" th:field="*{accountId}"/>
+      
+      <div class="form-group">
+        <label>Tên đăng nhập: <span style="color: red;">*</span></label>
+        <input type="text" th:field="*{username}" required/>
+      </div>
+
+      <div th:if="${account.accountId == null}" class="form-group">
+        <label>Mật khẩu: <span style="color: red;">*</span></label>
+        <input type="password" name="newPassword" required/>
+      </div>
+
+      <div th:if="${account.accountId != null}" class="form-group">
+        <label>Mật khẩu mới (để trống nếu không đổi):</label>
+        <input type="password" name="newPassword" placeholder="Nhập mật khẩu mới nếu muốn thay đổi"/>
+      </div>
+
+      <div class="form-group">
+        <label>Vai trò: <span style="color: red;">*</span></label>
+        <select name="role" required>
+          <option value="">-- Chọn vai trò --</option>
+          <option value="ADMIN" th:selected="${account.role == 'ADMIN'}">ADMIN</option>
+          <option value="HR" th:selected="${account.role == 'HR'}">HR</option>
+          <option value="EMPLOYEE" th:selected="${account.role == 'EMPLOYEE'}">EMPLOYEE</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Nhân viên (tùy chọn):</label>
+        <select name="empId">
+          <option value="">-- Chọn nhân viên --</option>
+          <option th:each="emp : ${employees}" 
+                  th:value="${emp.empId}" 
+                  th:selected="${account.emp != null && account.emp.empId == emp.empId}"
+                  th:text="${emp.fullName + ' (' + emp.email + ')'}"></option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a th:href="@{/admin/accounts}" class="btn">Hủy</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
+

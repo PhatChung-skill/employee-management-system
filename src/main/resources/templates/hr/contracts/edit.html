@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Sửa hợp đồng</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/hr-header :: header}"></div>
+
+  <div class="container">
+    <h1>Sửa hợp đồng</h1>
+    
+    <div th:if="${error}" class="alert alert-error" style="color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">
+      <span th:text="${error}"></span>
+    </div>
+    
+    <form th:object="${contract}" 
+          th:action="@{'/hr/contracts/edit/' + ${contract.contractId}}" 
+          method="post" class="form-container">
+      <input type="hidden" th:field="*{contractId}"/>
+      
+      <div class="form-group">
+        <label>Nhân viên: <span style="color: red;">*</span></label>
+        <select name="empId" required>
+          <option value="">-- Chọn nhân viên --</option>
+          <option th:each="emp : ${employees}" 
+                  th:value="${emp.empId}" 
+                  th:selected="${contract.emp != null && contract.emp.empId == emp.empId}"
+                  th:text="${emp.fullName + ' (' + emp.email + ')'}"></option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Loại hợp đồng: <span style="color: red;">*</span></label>
+        <input type="text" th:field="*{contractType}" required placeholder="VD: Hợp đồng chính thức, Hợp đồng thử việc"/>
+      </div>
+
+      <div class="form-group">
+        <label>Ngày bắt đầu: <span style="color: red;">*</span></label>
+        <input type="date" name="startDate" 
+               th:value="${contract.startDate != null ? #temporals.format(contract.startDate, 'yyyy-MM-dd') : ''}" 
+               required/>
+      </div>
+
+      <div class="form-group">
+        <label>Ngày kết thúc: <span style="color: red;">*</span></label>
+        <input type="date" name="endDate" 
+               th:value="${contract.endDate != null ? #temporals.format(contract.endDate, 'yyyy-MM-dd') : ''}" 
+               required/>
+      </div>
+
+      <div class="form-group">
+        <label>Mức lương: <span style="color: red;">*</span></label>
+        <input type="number" th:field="*{salary}" step="0.01" min="0" required placeholder="Nhập số tiền"/>
+      </div>
+
+      <div class="form-group">
+        <label>Trạng thái: <span style="color: red;">*</span></label>
+        <select th:field="*{status}" required>
+          <option value="Đang hiệu lực">Đang hiệu lực</option>
+          <option value="Chờ duyệt">Chờ duyệt</option>
+          <option value="Hết hạn">Hết hạn</option>
+          <option value="Đã chấm dứt">Đã chấm dứt</option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Cập nhật</button>
+        <a th:href="@{/hr/contracts}" class="btn">Hủy</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
+
